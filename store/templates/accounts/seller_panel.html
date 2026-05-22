@@ -1,0 +1,98 @@
+{% extends 'store/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center mb-4">📦 پنل فروشنده</h2>
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- ستون سمت راست: فرم افزودن محصول جدید -->
+        <div class="col-md-5 mb-4">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-primary text-white rounded-top-4">
+                    <h4 class="mb-0">➕ افزودن محصول جدید</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <button type="submit"
+                            class="btn btn-success w-100 py-2 mt-3">
+                            🚀 افزودن به فروشگاه
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- ستون سمت چپ: لیست محصولات موجود فروشنده -->
+        <div class="col-md-7">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-info text-white rounded-top-4">
+                    <h4 class="mb-0">📋 محصولات من</h4>
+                </div>
+                <div class="card-body">
+                    {% if products %}
+                    <div class="row row-cols-1 row-cols-md-2 g-4">
+                        {% for product in products %}
+                        <div class="col">
+                            <div class="card h-100 shadow-sm">
+                                {% if product.image %}
+                                <img src="{{ product.imageURL }}"
+                                    class="card-img-top"
+                                    alt="{{ product.name }}"
+                                    style="height: 150px; object-fit: cover;">
+                                {% else %}
+                                <img src="{% static 'images/placeholder.png' %}"
+                                    class="card-img-top" alt="بدون تصویر"
+                                    style="height: 150px; object-fit: cover;">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">{{product.name}}</h5>
+                                    <p
+                                        class="card-text text-muted small">{{product.description|truncatewords:15|default:"بدون توضیحات"}}</p>
+                                    <p class="card-text fw-bold text-success">💰
+                                        ${{ product.price|floatformat:2 }}</p>
+
+                                    <p class="card-text">
+                                        {% if product.digital %}
+                                        دیجیتال
+                                        {% else %}
+                                        فیزیکی
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                <div
+                                    class="card-footer bg-white border-top-0 d-flex justify-content-between">
+                                    <a
+                                        href="{% url 'edit_product' product.id %}"
+                                        class="btn btn-sm btn-warning">
+                                        ✏️ ویرایش
+                                    </a>
+                                    <a
+                                        href="{% url 'delete_product' product.id %}"
+                                        class="btn btn-sm btn-danger"
+                                        onclick="return confirm('آیا از حذف محصول «{{ product.name }}» مطمئن هستید؟');">
+                                        🗑️ حذف
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info text-center">
+                        هنوز محصولی اضافه نکرده‌اید. از فرم روبرو شروع کنید!
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,66 @@
+{% extends 'store/main.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/auth_style.css' %}">
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">ثبت‌نام کاربر جدید</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="id_username">نام کاربری:</label>
+                            <input type="text" name="username" id="id_username" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_password1">رمز عبور:</label>
+                            <div class="password-wrapper">
+                                <input type="password" name="password1" id="id_password1" class="form-control" required>
+                                <button type="button" class="toggle-password" data-target="id_password1">😒</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_password2">تکرار رمز عبور:</label>
+                            <div class="password-wrapper">
+                                <input type="password" name="password2" id="id_password2" class="form-control" required>
+                                <button type="button" class="toggle-password" data-target="id_password2">😒</button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="id_role">نقش خود را انتخاب کنید:</label>
+                            <select name="role" id="id_role" class="form-control">
+                                <option value="buyer">خریدار</option>
+                                <option value="seller">فروشنده</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">ثبت‌نام</button>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>قبلاً ثبت‌نام کرده‌اید؟ <a href="{% url 'login' %}">وارد شوید</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    document.querySelectorAll('.toggle-password').forEach(button => {
+        button.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const input = document.getElementById(targetId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                this.textContent = '🧐';
+            } else {
+                input.type = 'password';
+                this.textContent = '😒';
+            }
+        });
+    });
+</script>
+{% endblock %}

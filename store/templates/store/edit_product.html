@@ -1,0 +1,26 @@
+{% extends 'store/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-warning text-white rounded-top-4">
+                    <h4 class="mb-0">✏️ ویرایش محصول: {{ product.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-primary">💾 ذخیره تغییرات</button>
+                            <a href="{% url 'seller_panel' %}" class="btn btn-secondary">بازگشت</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

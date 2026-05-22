@@ -1,0 +1,39 @@
+/* static/css/auth_style.css */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.password-wrapper input {
+    flex: 1;
+    padding-right: 40px;
+    direction: ltr; /* برای نمایش صحیح آیکون در سمت راست */
+}
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    padding: 0;
+    line-height: 1;
+    color: #6c757d;
+}
+.toggle-password:hover {
+    color: #343a40;
+}
+/* اگر فیلدها در فرم به صورت عمودی چیده شده‌اند */
+.form-group {
+    margin-bottom: 1rem;
+}
+/* بهینه‌سازی برای موبایل */
+@media (max-width: 576px) {
+    .toggle-password {
+        font-size: 1rem;
+        right: 8px;
+    }
+    .password-wrapper input {
+        padding-right: 32px;
+    }
+}
