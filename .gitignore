@@ -49,5 +49,4 @@ htmlcov/
 *.sqlite3
 debug.log
 debug_log.txt
-screenshots/
 *.sublime-*
