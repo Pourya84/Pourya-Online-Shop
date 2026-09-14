@@ -1,0 +1,155 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+
+<div class="container my-5">
+  <div class="row">
+    <div class="col-lg-12">
+
+      <!-- خلاصه سبد خرید -->
+      <div class="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden">
+        <div class="card-body p-4">
+          <div class="row align-items-center g-3">
+            <div class="col-md-4">
+              <h5 class="mb-0">
+                <span class="badge bg-warning text-dark rounded-pill px-3 py-2">
+                  🛒 تعداد کالا: <strong>{{ order.get_total_items|default:0 }}</strong>
+                </span>
+              </h5>
+            </div>
+            <div class="col-md-4">
+              <h5 class="mb-0">
+                <span class="badge bg-success text-white rounded-pill px-3 py-2">
+                  💰 مجموع: <strong>${{ order.get_total_price|floatformat:0|intcomma }}</strong>
+                </span>
+              </h5>
+            </div>
+            <div class="col-md-4 text-md-end">
+              <a href="{% url 'store:store_panel' %}" class="btn btn-outline-dark rounded-pill px-4 me-2">
+                ← ادامه خرید
+              </a>
+              <a href="{% url 'store:checkout' %}" class="btn btn-warning rounded-pill px-4 fw-bold text-dark">
+                🚀 تسویه حساب
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- لیست محصولات سبد -->
+      <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="card-body p-0">
+          
+          <!-- هدر جدول -->
+          <div class="d-none d-md-grid cart-header bg-light p-3 fw-bold text-muted" style="grid-template-columns: 2fr 2fr 1fr 1fr 1fr; gap: 1rem;">
+            <div>محصول</div>
+            <div>نام</div>
+            <div>قیمت</div>
+            <div>تعداد</div>
+            <div>جمع</div>
+          </div>
+
+          <!-- هر آیتم -->
+          {% for item in items %}
+          <div class="cart-item p-3 border-bottom" style="display: grid; grid-template-columns: 2fr 2fr 1fr 1fr 1fr; gap: 1rem; align-items: center;">
+            <!-- تصویر -->
+            <div>
+              <img class="row-image rounded-3 shadow-sm" src="{{ item.product.imageURL }}" alt="{{ item.product.name }}" style="width: 70px; height: 70px; object-fit: cover;">
+            </div>
+            <!-- نام -->
+            <div class="fw-semibold">{{ item.product.name }}</div>
+            <!-- قیمت -->
+            <div class="text-success fw-bold">${{ item.product.price|floatformat:0|intcomma }}</div>
+            <!-- تعداد + دکمه‌های +/- -->
+            <div>
+              <div class="d-flex align-items-center gap-2">
+                <form method="post" action="{% url 'store:update_cart_item' item.product.id 'decrease' %}" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-outline-secondary btn-sm rounded-circle" style="width: 32px; height: 32px; padding: 0;">−</button>
+                </form>
+                <span class="fw-bold fs-5">{{ item.quantity }}</span>
+                <form method="post" action="{% url 'store:update_cart_item' item.product.id 'increase' %}" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-outline-secondary btn-sm rounded-circle" style="width: 32px; height: 32px; padding: 0;">+</button>
+                </form>
+              </div>
+            </div>
+            <!-- جمع کل آیتم -->
+            <div class="fw-bold text-primary">${{ item.get_total|floatformat:0|intcomma }}</div>
+          </div>
+          {% empty %}
+          <div class="text-center py-5">
+            <h5 class="text-muted">🛒 سبد خرید شما خالی است.</h5>
+            <a href="{% url 'store:store_panel' %}" class="btn btn-warning rounded-pill mt-3">مشاهده محصولات</a>
+          </div>
+          {% endfor %}
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- استایل‌های تکمیلی برای هماهنگی با تم -->
+<style>
+  .cart-header {
+    background: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+  }
+  .cart-item {
+    background: #fff;
+    transition: background 0.15s ease;
+  }
+  .cart-item:hover {
+    background: #fafffe;
+  }
+  @media (max-width: 768px) {
+    .cart-item {
+      grid-template-columns: 1fr !important;
+      gap: 0.5rem !important;
+      text-align: center;
+      padding: 1rem;
+    }
+    .cart-item .row-image {
+      width: 100px;
+      height: 100px;
+      margin: 0 auto;
+    }
+    .cart-header {
+      display: none !important;
+    }
+    .cart-item > div {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed #eee;
+      padding: 0.3rem 0;
+    }
+    .cart-item > div:last-child {
+      border-bottom: none;
+    }
+    .cart-item > div::before {
+      content: attr(data-label);
+      font-weight: 600;
+      color: #6c757d;
+    }
+    /* برچسب‌های داده برای موبایل */
+    .cart-item > div:nth-child(1)::before { content: "تصویر"; }
+    .cart-item > div:nth-child(2)::before { content: "نام"; }
+    .cart-item > div:nth-child(3)::before { content: "قیمت"; }
+    .cart-item > div:nth-child(4)::before { content: "تعداد"; }
+    .cart-item > div:nth-child(5)::before { content: "جمع"; }
+    .cart-item > div:nth-child(4) .d-flex {
+      margin: 0 auto;
+    }
+  }
+  @media (min-width: 769px) {
+    .cart-item > div::before {
+      display: none;
+    }
+  }
+</style>
+
+{% endblock content %}

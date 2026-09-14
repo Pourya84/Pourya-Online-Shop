@@ -1,0 +1,209 @@
+{% extends 'store/main.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  /* استایل‌های اختصاصی صفحات احراز هویت */
+  .auth-card {
+    border: none;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.10);
+    transition: transform 0.3s ease;
+  }
+  .auth-card:hover {
+    transform: translateY(-4px);
+  }
+  .auth-card .card-header {
+    background: linear-gradient(145deg, #f39c12, #e67e22);
+    padding: 1.8rem 1.5rem;
+    border-bottom: none;
+    text-align: center;
+  }
+  .auth-card .card-header h4 {
+    color: #fff;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.5px;
+  }
+  .auth-card .card-header h4 i {
+    margin-left: 8px;
+  }
+  .auth-card .card-body {
+    padding: 2rem 1.8rem;
+    background: #ffffff;
+  }
+  .auth-card .form-group {
+    margin-bottom: 1.2rem;
+  }
+  .auth-card .form-group label {
+    font-weight: 600;
+    color: #2d3436;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+  .auth-card .form-control {
+    border-radius: 16px;
+    border: 2px solid #e9ecef;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    transition: all 0.25s ease;
+    background: #f8f9fa;
+  }
+  .auth-card .form-control:focus {
+    border-color: #f39c12;
+    box-shadow: 0 0 0 4px rgba(243, 156, 18, 0.15);
+    background: #ffffff;
+  }
+  .password-wrapper {
+    position: relative;
+  }
+  .password-wrapper .form-control {
+    padding-left: 3.2rem;
+  }
+  .toggle-password {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+  .toggle-password:hover {
+    opacity: 1;
+  }
+  .auth-card .btn-auth {
+    border-radius: 30px;
+    padding: 0.8rem 1.5rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    border: none;
+    background: linear-gradient(145deg, #f39c12, #e67e22);
+    color: #fff;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  .auth-card .btn-auth:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(243, 156, 18, 0.35);
+  }
+  .auth-card .form-check {
+    margin-top: 0.2rem;
+  }
+  .auth-card .form-check-input {
+    border-radius: 6px;
+    border: 2px solid #ced4da;
+    width: 1.2rem;
+    height: 1.2rem;
+    margin-top: 0.15rem;
+  }
+  .auth-card .form-check-input:checked {
+    background-color: #f39c12;
+    border-color: #f39c12;
+  }
+  .auth-card .form-check-label {
+    color: #2d3436;
+    font-weight: 500;
+  }
+  .auth-card .auth-link {
+    color: #f39c12;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .auth-card .auth-link:hover {
+    color: #e67e22;
+    text-decoration: underline;
+  }
+  .auth-card .card-footer {
+    background: #f8f9fa;
+    border-top: none;
+    padding: 1.2rem;
+    text-align: center;
+    border-radius: 0 0 30px 30px;
+  }
+  /* ریسپانسیو */
+  @media (max-width: 576px) {
+    .auth-card .card-body {
+      padding: 1.5rem 1.2rem;
+    }
+    .auth-card .card-header {
+      padding: 1.2rem 1rem;
+    }
+    .auth-card .card-header h4 {
+      font-size: 1.2rem;
+    }
+  }
+</style>
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card auth-card">
+        <div class="card-header">
+          <h4><i class="fas fa-sign-in-alt"></i> ورود به حساب کاربری</h4>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="id_username">👤 نام کاربری</label>
+              <input type="text" name="username" id="id_username" class="form-control" placeholder="نام کاربری خود را وارد کنید" required>
+            </div>
+            <div class="form-group">
+              <label for="id_password">🔒 رمز عبور</label>
+              <div class="password-wrapper">
+                <input type="password" name="password" id="id_password" class="form-control" placeholder="رمز عبور خود را وارد کنید" required>
+                <button type="button" class="toggle-password" data-target="id_password" aria-label="نمایش رمز">
+                  😑
+                </button>
+              </div>
+            </div>
+            <div class="form-check mb-3">
+              <input type="checkbox" class="form-check-input" name="remember_me" id="remember_me">
+              <label class="form-check-label" for="remember_me">مرا به خاطر بسپار</label>
+            </div>
+            <button type="submit" class="btn-auth">🚀 ورود</button>
+          </form>
+        </div>
+        <div class="card-footer">
+          <p class="mb-0">
+            حساب کاربری ندارید؟ <a href="{% url 'accounts:register' %}" class="auth-link">ثبت‌نام کنید</a>
+          </p>
+        </div>
+        <div class="text-center mt-3">
+          <p>
+            <a href="{% url 'accounts:password_reset' %}" class="text-decoration-none">
+              🔑 رمز عبور خود را فراموش کرده‌اید؟
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.toggle-password').forEach(button => {
+    button.addEventListener('click', function() {
+      const targetId = this.getAttribute('data-target');
+      const input = document.getElementById(targetId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        this.textContent = '😏';
+      } else {
+        input.type = 'password';
+        this.textContent = '😑';
+      }
+    });
+  });
+</script>
+{% endblock %}

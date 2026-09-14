@@ -1,18 +1,53 @@
-
-venv/
-env/
-ENV/
-
-db.sqlite3
-
+# ===== Python =====
 __pycache__/
+*.py[cod]
+*.pyd
+*.so
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ===== Django =====
+*.log
+*.pot
 *.pyc
-
-.env
-*.env
-
+*.db
+db.sqlite3
+db.sqlite3-journal
 media/
 staticfiles/
+static/CACHE/
+*.mo
 
+# ===== IDE =====
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ===== Testing =====
+.coverage
+htmlcov/
+.pytest_cache/
+.tox/
+.mypy_cache/
+
+# ===== Environment =====
+.env
+.env.local
+.env.*.local
+*.env
+
+# ===== Others =====
+*.sql
+*.sqlite3
+debug.log
+debug_log.txt
+screenshots/
+*.sublime-*

@@ -1,0 +1,570 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<!-- اسلایدر -->
+<div class="container position-relative px-0">
+  <div id="mainSlider" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000">
+    <div class="carousel-indicators">
+      <button type="button" data-bs-target="#mainSlider" data-bs-slide-to="0" class="active"></button>
+      <button type="button" data-bs-target="#mainSlider" data-bs-slide-to="1"></button>
+      <button type="button" data-bs-target="#mainSlider" data-bs-slide-to="2"></button>
+    </div>
+    <div class="carousel-inner rounded-4 overflow-hidden shadow-lg">
+      <!-- اسلاید ۱ -->
+      <div class="carousel-item active" style="background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);">
+        <div class="container py-5">
+          <div class="row align-items-center" style="min-height:450px;">
+            <div class="col-lg-6 text-white order-lg-1 order-2">
+              <span class="badge bg-warning text-dark fs-6 px-4 py-2 rounded-pill">🔥 جدیدترین‌ها</span>
+              <h1 class="display-4 fw-bold lh-1 mt-3" style="color:#fff;">به فروشگاه <br><span style="color:#ffd700;">پوریا</span> خوش آمدید</h1>
+              <p class="lead my-4" style="color:#f0f0f0;">بهترین قیمت‌ها و کیفیت‌های استثنایی – خریدی مطمئن و لذت‌بخش</p>
+              <a href="{% url 'store:store_panel' %}" class="btn btn-lg btn-warning text-dark fw-bold px-5 py-3 rounded-pill shadow-lg hover-lift">🛒 مشاهده فروشگاه</a>
+            </div>
+            <div class="col-lg-6 order-lg-2 order-1 text-center">
+              <img src="{% static 'images/slide1.jpg' %}" class="img-fluid rounded-4" alt="ارسال سریع" style="max-height:350px; object-fit:contain; filter:drop-shadow(0 20px 30px rgba(255,193,7,0.3));">
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- اسلاید ۲ -->
+      <div class="carousel-item" style="background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);">
+        <div class="container py-5">
+          <div class="row align-items-center" style="min-height:450px;">
+            <div class="col-lg-6 text-white order-lg-1 order-2">
+              <span class="badge bg-danger text-white fs-6 px-4 py-2 rounded-pill">🎉 تخفیف ویژه</span>
+              <h1 class="display-4 fw-bold lh-1 mt-3" style="color:#fff;">تا <span style="color:#ff6b6b;">۷۰٪</span> تخفیف</h1>
+              <p class="lead my-4" style="color:#f0f0f0;">برای محصولات منتخب – همین حالا خرید کنید و از تخفیف‌های شگفت‌انگیز بهره‌مند شوید.</p>
+              <a href="{% url 'store:store_panel' %}" class="btn btn-lg btn-danger text-white fw-bold px-5 py-3 rounded-pill shadow-lg hover-lift">💥 همین حالا بخرید</a>
+            </div>
+            <div class="col-lg-6 order-lg-2 order-1 text-center">
+              <img src="{% static 'images/slide2.jpg' %}" class="img-fluid rounded-4" alt="تخفیف ویژه" style="max-height:350px; object-fit:contain; filter:drop-shadow(0 20px 30px rgba(220,53,69,0.4));">
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- اسلاید ۳ -->
+      <div class="carousel-item" style="background: linear-gradient(135deg, #004d40, #00695c, #00897b);">
+        <div class="container py-5">
+          <div class="row align-items-center" style="min-height:450px;">
+            <div class="col-lg-6 text-white order-lg-1 order-2">
+              <span class="badge bg-info text-dark fs-6 px-4 py-2 rounded-pill">🚚 ارسال رایگان</span>
+              <h1 class="display-4 fw-bold lh-1 mt-3" style="color:#fff;">اولین سفارش <br><span style="color:#81ecec;">ارسال رایگان</span></h1>
+              <p class="lead my-4" style="color:#f0f0f0;">برای اولین خرید، هزینه ارسال را صفر کنید. کافی است ثبت‌نام کنید.</p>
+              <a href="{% url 'store:store_panel' %}" class="btn btn-lg btn-info text-dark fw-bold px-5 py-3 rounded-pill shadow-lg hover-lift">📦 اطلاعات بیشتر</a>
+            </div>
+            <div class="col-lg-6 order-lg-2 order-1 text-center">
+              <img src="{% static 'images/slide3.jpg' %}" class="img-fluid rounded-4" alt="ارسال رایگان" style="max-height:350px; object-fit:contain; filter:drop-shadow(0 20px 30px rgba(0,188,212,0.4));">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#mainSlider" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">قبلی</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#mainSlider" data-bs-slide="next">
+      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      <span class="visually-hidden">بعدی</span>
+    </button>
+  </div>
+</div>
+
+<!-- ===== جدیدترین محصولات با استایل مشابه store_panel ===== -->
+<div class="container my-5">
+  <h3 class="text-center mb-4 fw-bold" style="color:#2d3436;">✨ جدیدترین محصولات (۲۴ ساعت گذشته)</h3>
+  {% if new_products %}
+  <div class="row g-3">
+    {% for product in new_products %}
+    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+      <div class="card product-card h-100">
+        <div class="product-image-wrapper">
+          <img class="product-thumbnail" src="{{ product.imageURL }}" alt="{{ product.name }}" loading="lazy">
+        </div>
+        <div class="card-body d-flex flex-column p-3">
+          <h6 class="product-title fw-bold mb-2 text-truncate">{{ product.name }}</h6>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="btn-group btn-group-sm" role="group">
+              {% if product.is_available %}
+                {% if order %}
+                <form method="post" action="{% url 'store:update_cart_item' product.id 'increase' %}" style="display: inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.path }}">
+                  <button type="submit" class="btn btn-sm btn-add-cart">🛒</button>
+                </form>
+                {% else %}
+                <form method="post" action="{% url 'accounts:login' %}" style="display: inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.path }}">
+                  <button type="submit" class="btn btn-sm btn-add-cart">🛒</button>
+                </form>
+                {% endif %}
+              {% else %}
+                <button class="btn btn-sm btn-danger" disabled>اتمام</button>
+              {% endif %}
+              <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#productModal{{ product.id }}">مشاهده</button>
+            </div>
+            {% if product.is_available %}
+              <span class="product-price fw-bold text-success">${{ product.price|floatformat:0|intcomma }}</span>
+            {% endif %}
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-1">
+            <div class="product-tags d-flex flex-wrap gap-1">
+              {% for cat in product.categories.all|slice:":3" %}
+                <span class="badge bg-secondary">{{ cat.name }}</span>
+              {% endfor %}
+              {% if product.categories.count > 3 %}
+                <span class="badge bg-secondary">+{{ product.categories.count|add:"-3" }}</span>
+              {% endif %}
+              {% if not product.categories.all %}
+                <span class="text-muted small">بدون دسته</span>
+              {% endif %}
+            </div>
+            <div class="product-like">
+              {% if user.is_authenticated %}
+                <form method="post" action="{% url 'store:like_product' product.id %}" style="display: inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-link p-0 text-decoration-none text-danger" style="font-size: 0.9rem;">
+                    ❤️ {{ product.productlike_set.count }}
+                  </button>
+                </form>
+              {% else %}
+                <a href="{% url 'accounts:login' %}" class="text-muted text-decoration-none" style="font-size: 0.9rem;">
+                  ❤️ {{ product.productlike_set.count }}
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- مودال -->
+    <div class="modal fade" id="productModal{{ product.id }}" tabindex="-1" aria-labelledby="modalLabel{{ product.id }}" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalLabel{{ product.id }}">{{ product.name }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"><span aria-hidden="true">❌</span></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="modal-image-wrapper">
+                  <img src="{{ product.imageURL }}" class="modal-product-image" alt="{{ product.name }}" loading="lazy">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <p><strong>قیمت:</strong> {% if product.is_available %}${{ product.price|floatformat:0|intcomma }}{% else %}<span class="text-danger">اتمام موجودی</span>{% endif %}</p>
+                <p><strong>توضیحات:</strong> {{ product.description|default:"بدون توضیحات" }}</p>
+                <p><strong>لایک:</strong> {{ product.productlike_set.count }}</p>
+                <div class="d-flex flex-wrap mt-2 text-muted small">
+                  <strong>دسته‌بندی‌ها:</strong>
+                  {% for cat in product.categories.all %}
+                    <span class="badge bg-secondary me-1">{{ cat.name }}</span>
+                  {% empty %}
+                    <span class="text-muted">بدون دسته‌بندی</span>
+                  {% endfor %}
+                </div>
+                {% if product.is_available %}
+                  <form method="post" action="{% url 'store:update_cart_item' product.id 'increase' %}" class="mt-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <button type="submit" class="btn btn-primary w-100">🛒 افزودن به سبد</button>
+                  </form>
+                {% else %}
+                  <button class="btn btn-danger w-100 mt-3" disabled>اتمام موجودی</button>
+                {% endif %}
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-12">
+                <h5>نظرات ({{ product.comments.count }})</h5>
+                <hr>
+                {% for comment in product.comments.all|slice:":3" %}
+                  <div class="card mb-2">
+                    <div class="card-body py-2">
+                      <strong>{{ comment.user.name }}</strong>
+                      <small class="text-muted float-end">{{ comment.created_at|date:"Y/m/d H:i" }}</small>
+                      <p class="mt-1 mb-0">{{ comment.text }}</p>
+                    </div>
+                  </div>
+                {% empty %}
+                  <p class="text-muted">هنوز نظری ثبت نشده است.</p>
+                {% endfor %}
+                {% if product.comments.count > 3 %}
+                  <p class="text-muted small">و {{ product.comments.count|add:"-3" }} نظر دیگر ...</p>
+                {% endif %}
+                {% if user.is_authenticated %}
+                  <form method="post" action="{% url 'store:add_comment' product.id %}" class="mt-3">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <label for="id_text">نظر خود را بنویسید:</label>
+                      <textarea name="text" id="id_text" rows="2" class="form-control" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">ارسال نظر</button>
+                  </form>
+                {% else %}
+                  <p class="alert alert-warning mt-3">برای ثبت نظر <a href="{% url 'accounts:login' %}">وارد شوید</a>.</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">✖️ بستن</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-warning text-center">فعلاً محصول جدیدی در ۲۴ ساعت گذشته اضافه نشده است.</div>
+  {% endif %}
+</div>
+
+<!-- ===== محبوب‌ترین محصولات با استایل مشابه store_panel ===== -->
+<div class="container my-5">
+  <h3 class="text-center mb-4 fw-bold" style="color:#2d3436;">❤️ محبوب‌ترین محصولات</h3>
+  {% if most_liked_products %}
+  <div class="row g-3">
+    {% for product in most_liked_products %}
+    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+      <div class="card product-card h-100">
+        <div class="product-image-wrapper">
+          <img class="product-thumbnail" src="{{ product.imageURL }}" alt="{{ product.name }}" loading="lazy">
+        </div>
+        <div class="card-body d-flex flex-column p-3">
+          <h6 class="product-title fw-bold mb-2 text-truncate">{{ product.name }}</h6>
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="btn-group btn-group-sm" role="group">
+              {% if product.is_available %}
+                {% if order %}
+                <form method="post" action="{% url 'store:update_cart_item' product.id 'increase' %}" style="display: inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.path }}">
+                  <button type="submit" class="btn btn-sm btn-add-cart">🛒</button>
+                </form>
+                {% else %}
+                <form method="post" action="{% url 'accounts:login' %}" style="display: inline;">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.path }}">
+                  <button type="submit" class="btn btn-sm btn-add-cart">🛒</button>
+                </form>
+                {% endif %}
+              {% else %}
+                <button class="btn btn-sm btn-danger" disabled>اتمام</button>
+              {% endif %}
+              <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#productModal{{ product.id }}">مشاهده</button>
+            </div>
+            {% if product.is_available %}
+              <span class="product-price fw-bold text-success">${{ product.price|floatformat:0|intcomma }}</span>
+            {% endif %}
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-1">
+            <div class="product-tags d-flex flex-wrap gap-1">
+              {% for cat in product.categories.all|slice:":3" %}
+                <span class="badge bg-secondary">{{ cat.name }}</span>
+              {% endfor %}
+              {% if product.categories.count > 3 %}
+                <span class="badge bg-secondary">+{{ product.categories.count|add:"-3" }}</span>
+              {% endif %}
+              {% if not product.categories.all %}
+                <span class="text-muted small">بدون دسته</span>
+              {% endif %}
+            </div>
+            <div class="product-like">
+              {% if user.is_authenticated %}
+                <form method="post" action="{% url 'store:like_product' product.id %}" style="display: inline;">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-link p-0 text-decoration-none text-danger" style="font-size: 0.9rem;">
+                    ❤️ {{ product.productlike_set.count }}
+                  </button>
+                </form>
+              {% else %}
+                <a href="{% url 'accounts:login' %}" class="text-muted text-decoration-none" style="font-size: 0.9rem;">
+                  ❤️ {{ product.productlike_set.count }}
+                </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- مودال (آیدی منحصربه‌فرد) -->
+    <div class="modal fade" id="productModal{{ product.id }}" tabindex="-1" aria-labelledby="modalLabel{{ product.id }}" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalLabel{{ product.id }}">{{ product.name }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن"><span aria-hidden="true">❌</span></button>
+          </div>
+          <div class="modal-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="modal-image-wrapper">
+                  <img src="{{ product.imageURL }}" class="modal-product-image" alt="{{ product.name }}" loading="lazy">
+                </div>
+              </div>
+              <div class="col-md-6">
+                <p><strong>قیمت:</strong> {% if product.is_available %}${{ product.price|floatformat:0|intcomma }}{% else %}<span class="text-danger">اتمام موجودی</span>{% endif %}</p>
+                <p><strong>توضیحات:</strong> {{ product.description|default:"بدون توضیحات" }}</p>
+                <p><strong>لایک:</strong> {{ product.productlike_set.count }}</p>
+                <div class="d-flex flex-wrap mt-2 text-muted small">
+                  <strong>دسته‌بندی‌ها:</strong>
+                  {% for cat in product.categories.all %}
+                    <span class="badge bg-secondary me-1">{{ cat.name }}</span>
+                  {% empty %}
+                    <span class="text-muted">بدون دسته‌بندی</span>
+                  {% endfor %}
+                </div>
+                {% if product.is_available %}
+                  <form method="post" action="{% url 'store:update_cart_item' product.id 'increase' %}" class="mt-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="next" value="{{ request.path }}">
+                    <button type="submit" class="btn btn-primary w-100">🛒 افزودن به سبد</button>
+                  </form>
+                {% else %}
+                  <button class="btn btn-danger w-100 mt-3" disabled>اتمام موجودی</button>
+                {% endif %}
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-12">
+                <h5>نظرات ({{ product.comments.count }})</h5>
+                <hr>
+                {% for comment in product.comments.all|slice:":3" %}
+                  <div class="card mb-2">
+                    <div class="card-body py-2">
+                      <strong>{{ comment.user.name }}</strong>
+                      <small class="text-muted float-end">{{ comment.created_at|date:"Y/m/d H:i" }}</small>
+                      <p class="mt-1 mb-0">{{ comment.text }}</p>
+                    </div>
+                  </div>
+                {% empty %}
+                  <p class="text-muted">هنوز نظری ثبت نشده است.</p>
+                {% endfor %}
+                {% if product.comments.count > 3 %}
+                  <p class="text-muted small">و {{ product.comments.count|add:"-3" }} نظر دیگر ...</p>
+                {% endif %}
+                {% if user.is_authenticated %}
+                  <form method="post" action="{% url 'store:add_comment' product.id %}" class="mt-3">
+                    {% csrf_token %}
+                    <div class="form-group">
+                      <label for="id_text">نظر خود را بنویسید:</label>
+                      <textarea name="text" id="id_text" rows="2" class="form-control" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">ارسال نظر</button>
+                  </form>
+                {% else %}
+                  <p class="alert alert-warning mt-3">برای ثبت نظر <a href="{% url 'accounts:login' %}">وارد شوید</a>.</p>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">✖️ بستن</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-info text-center">هنوز محصولی لایک نخورده است.</div>
+  {% endif %}
+</div>
+
+<!-- ===== درباره ما ===== -->
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card bg-light border-0 shadow-sm">
+        <div class="card-body text-center">
+          <h4 class="card-title">📢 درباره ما</h4>
+          <p class="card-text">
+            فروشگاه آنلاین پوریا با هدف ارائه بهترین کالاها با کیفیت کم نظیر و قیمتی مناسب آغاز به کار کرده است.
+            همواره سعی در جلب رضایت مشتری های عزیز را داریم
+            <br>
+            با اطمینان خرید کنید
+          </p>
+          <p class="card-text">
+            <small>ارسال سریع – پشتیبانی 24 ساعته – ضمانت بازگشت وجه </small>
+          </p>
+          <a href="{% url 'store:store_panel' %}" class="btn btn-primary">ورود به فروشگاه</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== استایل‌های مشترک با store_panel ===== -->
+<style>
+  /* ===== استایل‌های کارت محصول ===== */
+  .product-card {
+    border-radius: 20px;
+    overflow: hidden;
+    background: #ffffff;
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.10);
+  }
+
+  .product-image-wrapper {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .product-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    transition: transform 0.4s ease;
+    background-color: #f8f9fa;
+  }
+  .product-thumbnail:hover {
+    transform: scale(1.03);
+  }
+
+  .product-title {
+    font-size: 0.95rem;
+    color: #2d3436;
+    min-height: 2.5rem;
+    line-height: 1.3;
+  }
+
+  .btn-add-cart {
+    background: linear-gradient(145deg, #ff9a76, #f07b5a);
+    border: none;
+    color: #fff;
+    border-radius: 30px;
+    padding: 0.2rem 0.8rem;
+    font-weight: 500;
+    transition: all 0.25s ease;
+  }
+  .btn-add-cart:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 126, 95, 0.35);
+    color: #fff;
+  }
+
+  .product-price {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  .product-tags {
+    flex: 1;
+    min-width: 0;
+  }
+  .product-tags .badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    white-space: nowrap;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .product-like {
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+  }
+
+  .btn-group-sm .btn {
+    border-radius: 30px !important;
+    padding: 0.2rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  .btn-group-sm .btn-outline-primary {
+    border-color: #0984e3;
+    color: #0984e3;
+  }
+  .btn-group-sm .btn-outline-primary:hover {
+    background: #0984e3;
+    color: #fff;
+  }
+
+  .modal-image-wrapper {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 10px;
+  }
+  .modal-product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    background-color: #f8f9fa;
+  }
+
+  .modal-header .btn-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+  .modal-header .btn-close:hover {
+    opacity: 1;
+  }
+  .modal-header .btn-close span {
+    display: block;
+    line-height: 1;
+  }
+
+  @media (max-width: 768px) {
+    .product-image-wrapper {
+      height: 160px;
+    }
+    .modal-image-wrapper {
+      height: 220px;
+    }
+    .product-title {
+      font-size: 0.85rem;
+      min-height: 2.2rem;
+    }
+    .product-price {
+      font-size: 0.9rem;
+    }
+  }
+  @media (max-width: 576px) {
+    .product-image-wrapper {
+      height: 140px;
+    }
+    .modal-image-wrapper {
+      height: 180px;
+    }
+    .btn-group-sm .btn {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.6rem;
+    }
+    .product-tags .badge {
+      font-size: 0.55rem;
+      padding: 0.15rem 0.4rem;
+      max-width: 60px;
+    }
+  }
+</style>
+{% endblock %}

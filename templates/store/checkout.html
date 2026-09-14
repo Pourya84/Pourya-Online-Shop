@@ -1,0 +1,238 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<style>
+  /* استایل‌های اختصاصی تسویه‌حساب */
+  .checkout-card {
+    border-radius: 24px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+    padding: 2rem 1.8rem;
+    transition: box-shadow 0.3s ease;
+    height: 100%;
+  }
+
+  .checkout-card:hover {
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.10);
+  }
+
+  .checkout-card .form-control {
+    border-radius: 16px;
+    border: 2px solid #e9ecef;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    transition: all 0.25s ease;
+    background: #f8f9fa;
+  }
+
+  .checkout-card .form-control:focus {
+    border-color: #27ae60;
+    box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.15);
+    background: #ffffff;
+  }
+
+  .checkout-card .form-field {
+    margin-bottom: 1rem;
+  }
+
+  .checkout-card .form-field input::placeholder {
+    color: #adb5bd;
+    font-size: 0.95rem;
+  }
+
+  .btn-back-cart {
+    border-radius: 30px;
+    border: 2px solid #2d3436;
+    color: #2d3436;
+    padding: 0.5rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.25s ease;
+    background: transparent;
+  }
+
+  .btn-back-cart:hover {
+    background: #2d3436;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(45, 52, 54, 0.2);
+  }
+
+  .btn-continue {
+    border-radius: 30px;
+    padding: 0.7rem 2rem;
+    font-weight: 700;
+    border: none;
+    background: linear-gradient(145deg, #27ae60, #2ecc71);
+    color: #fff;
+    transition: all 0.3s ease;
+    width: 100%;
+    font-size: 1.05rem;
+  }
+
+  .btn-continue:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(39, 174, 96, 0.35);
+    color: #fff;
+  }
+
+  .order-summary-item {
+    display: flex;
+    align-items: center;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .order-summary-item:last-child {
+    border-bottom: none;
+  }
+
+  .order-summary-item .item-image {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-left: 1rem;
+  }
+
+  .order-summary-item .item-details {
+    flex: 1;
+  }
+
+  .order-summary-item .item-details p {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .order-summary-item .item-details .item-price {
+    color: #f39c12;
+    font-weight: 700;
+  }
+
+  .order-total {
+    background: #f8f9fa;
+    border-radius: 16px;
+    padding: 1.2rem;
+    margin-top: 1.5rem;
+  }
+
+  .order-total h5 {
+    font-weight: 700;
+    color: #2d3436;
+  }
+
+  .order-total .total-price {
+    color: #f39c12;
+    font-size: 1.3rem;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  @media (max-width: 768px) {
+    .checkout-card {
+      padding: 1.2rem;
+    }
+
+    .order-summary-item .item-image {
+      width: 45px;
+      height: 45px;
+    }
+
+    .btn-continue {
+      font-size: 0.95rem;
+      padding: 0.6rem 1.2rem;
+    }
+  }
+</style>
+
+<div class="container my-5">
+  <div class="row g-4">
+    <!-- ستون فرم -->
+    <div class="col-lg-6">
+      <div class="checkout-card" id="form-wrapper">
+        <form id="form">
+          <div id="user-info">
+            <div class="form-field">
+              <input required class="form-control" type="text" name="name" placeholder="👤 نام و نام خانوادگی ...">
+            </div>
+            <div class="form-field">
+              <input required class="form-control" type="email" name="email" placeholder="📧 ایمیل ...">
+            </div>
+          </div>
+
+          <div id="shipping-info">
+            <hr>
+            <h5 class="fw-bold" style="color:#2d3436;">🚚 اطلاعات ارسال</h5>
+            <hr>
+            <div class="form-field">
+              <input required class="form-control" type="text" name="address" placeholder="🏠 آدرس ...">
+            </div>
+            <div class="form-field">
+              <input required class="form-control" type="text" name="city" placeholder="🏙️ شهر ...">
+            </div>
+            <div class="form-field">
+              <input required class="form-control" type="text" name="state" placeholder="🗺️ استان ...">
+            </div>
+            <div class="form-field">
+              <input required class="form-control" type="text" name="zipcode" placeholder="📮 کد پستی ...">
+            </div>
+          </div>
+
+          <hr>
+          <button id="form-button" class="btn-continue" type="submit">
+            ✅ ادامه
+          </button>
+        </form>
+      </div>
+
+      <br>
+      <!-- بخش پرداخت (مخفی) -->
+      <div class="checkout-card hidden" id="payment-info">
+        <h5 class="fw-bold">💳 گزینه‌های پرداخت</h5>
+        <small>درگاه پرداخت پی پال</small>
+        <!-- در صورت نیاز می‌توانید دکمه پرداخت را اینجا قرار دهید -->
+      </div>
+    </div>
+
+    <!-- ستون خلاصه سفارش -->
+    <div class="col-lg-6">
+      <div class="checkout-card">
+        <a class="btn-back-cart" href="{% url 'store:cart' %}">
+          &#x2190; بازگشت به سبد
+        </a>
+        <hr>
+        <h4 class="fw-bold" style="color:#2d3436;">📋 خلاصه سفارش</h4>
+        <hr>
+
+        <!-- آیتم‌های سفارش -->
+        {% for item in items %}
+        <div class="order-summary-item">
+          <img class="item-image" src="{{ item.product.imageURL }}" alt="{{ item.product.name }}">
+          <div class="item-details">
+            <p>{{ item.product.name }}</p>
+            <p class="item-price">${{ item.product.price|floatformat:0|intcomma }} <span
+                style="color:#6c757d; font-weight:400;">× {{ item.quantity }}</span></p>
+          </div>
+        </div>
+        {% endfor %}
+
+        <!-- جمع کل - اصلاح شده با نام‌های صحیح -->
+        <div class="order-total">
+          <div class="d-flex justify-content-between">
+            <h5>📦 تعداد کالاها:</h5>
+            <h5><strong>{{ order.get_total_items|default:0 }}</strong></h5>
+          </div>
+          <div class="d-flex justify-content-between mt-2">
+            <h5>💰 مجموع:</h5>
+            <h5 class="total-price"><strong>${{ order.get_total_price|floatformat:0|intcomma }}</strong></h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

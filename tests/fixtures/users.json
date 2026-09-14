@@ -1,0 +1,23 @@
+[
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "username": "admin",
+      "email": "admin@example.com",
+      "is_superuser": true,
+      "is_staff": true
+    }
+  },
+  {
+    "model": "store.userprofile",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "name": "Admin",
+      "email": "admin@example.com",
+      "role": "buyer",
+      "is_approved": true
+    }
+  }
+]

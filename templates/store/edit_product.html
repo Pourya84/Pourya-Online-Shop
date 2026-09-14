@@ -1,0 +1,171 @@
+{% extends 'store/main.html' %}
+{% load static %}
+
+{% block content %}
+<!-- کتابخانه Select2 -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- فرم جداگانه افزودن دسته -->
+            <div class="card mb-3">
+                <div class="card-header bg-secondary text-white py-2">
+                    🏷️ افزودن دسته‌بندی جدید
+                </div>
+                <div class="card-body">
+                    <form method="post" action="{% url 'store:add_category_standalone' %}?next={% url 'store:seller_panel' %}">
+                        {% csrf_token %}
+                        <div class="input-group">
+                            <input type="text" name="new_category_name" class="form-control" placeholder="نام دسته جدید" required>
+                            <button type="submit" class="btn btn-outline-primary">➕ افزودن دسته</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- فرم ویرایش محصول -->
+            <div class="card shadow-sm border-0 rounded-4">
+                <div class="card-header bg-warning text-dark rounded-top-4">
+                    <h4 class="mb-0">✏️ ویرایش محصول: {{ product.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ form.non_field_errors }}
+
+                        <div class="mb-3">
+                            {{ form.name.label_tag }}
+                            {{ form.name }}
+                            {{ form.name.errors }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.price.label_tag }}
+                            {{ form.price }}
+                            {{ form.price.errors }}
+                        </div>
+
+                        <div class="form-check mb-3">
+                            {{ form.digital }}
+                            {{ form.digital.label_tag }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.image.label_tag }}
+                            {{ form.image }}
+                            {{ form.image.errors }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form.description.label_tag }}
+                            {{ form.description }}
+                            {{ form.description.errors }}
+                        </div>
+
+                        <!-- ======== دسته‌بندی‌ها با Select2 (فقط این بخش تغییر کرده) ======== -->
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">{{ form.categories.label }}</label>
+                            <select name="{{ form.categories.name }}" 
+                                    id="{{ form.categories.id_for_label }}" 
+                                    class="form-control select2-categories" 
+                                    multiple="multiple">
+                                {% for category in form.categories.field.queryset %}
+                                    <option value="{{ category.pk }}" 
+                                        {% if category.pk in form.categories.value %}selected{% endif %}>
+                                        {{ category.name }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                            {{ form.categories.errors }}
+                            <small class="text-muted d-block mt-1">🔍 برای جستجو، کلمه مورد نظر را تایپ کنید.</small>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            {{ form.is_available }}
+                            {{ form.is_available.label_tag }}
+                        </div>
+                        {{ form.is_available.errors }}
+
+                        <div class="d-flex justify-content-between mt-4">
+                            <button type="submit" class="btn btn-primary">💾 ذخیره تغییرات</button>
+                            <a href="{% url 'store:seller_panel' %}" class="btn btn-secondary">بازگشت</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- اسکریپت Select2 -->
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        $('.select2-categories').select2({
+            theme: 'bootstrap-5',
+            placeholder: 'جستجوی دسته‌بندی...',
+            allowClear: true,
+            width: '100%',
+            language: {
+                noResults: function() {
+                    return '❌ دسته‌بندی یافت نشد';
+                },
+                searching: function() {
+                    return '🔍 در حال جستجو...';
+                }
+            }
+        });
+    });
+</script>
+
+<style>
+    /* تنظیم ظاهر Select2 برای هماهنگی با تم */
+    .select2-container--bootstrap-5 .select2-selection--multiple {
+        border-radius: 16px !important;
+        border: 2px solid #e9ecef !important;
+        padding: 0.3rem 0.5rem !important;
+        background: #f8f9fa !important;
+    }
+    .select2-container--bootstrap-5 .select2-selection--multiple:focus-within {
+        border-color: #27ae60 !important;
+        box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.15) !important;
+    }
+    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice {
+        background: #27ae60 !important;
+        color: #fff !important;
+        border: none !important;
+        border-radius: 30px !important;
+        padding: 0.2rem 0.8rem !important;
+        margin: 0.2rem 0.2rem !important;
+    }
+    .select2-container--bootstrap-5 .select2-selection--multiple .select2-selection__choice__remove {
+        color: #fff !important;
+        margin-left: 6px !important;
+    }
+    .select2-container--bootstrap-5 .select2-search--inline .select2-search__field {
+        color: #2d3436 !important;
+        min-width: 100px !important;
+    }
+    .select2-container--bootstrap-5 .select2-dropdown {
+        border-radius: 16px !important;
+        border: 2px solid #e9ecef !important;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08) !important;
+    }
+    .select2-container--bootstrap-5 .select2-results__option {
+        border-radius: 12px !important;
+        margin: 0.2rem 0.4rem !important;
+        padding: 0.5rem 0.8rem !important;
+    }
+    .select2-container--bootstrap-5 .select2-results__option--highlighted {
+        background: #27ae60 !important;
+        color: #fff !important;
+    }
+    .select2-container {
+        width: 100% !important;
+    }
+</style>
+{% endblock %}

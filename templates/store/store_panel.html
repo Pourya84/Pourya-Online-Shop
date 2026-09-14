@@ -1,0 +1,639 @@
+{% extends 'store/main.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block extra_nav_items %}
+<div class="d-flex align-items-center ms-3 me-3 flex-wrap gap-1">
+  <span class="text-white me-2" style="font-size:0.9rem;">مرتب‌سازی:</span>
+  <div class="btn-group btn-group-sm" role="group">
+    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}sort=price_desc"
+      class="btn btn-outline-light {% if request.GET.sort == 'price_desc' %}active{% endif %}">
+      گران‌ترین
+    </a>
+    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}sort=price_asc"
+      class="btn btn-outline-light {% if request.GET.sort == 'price_asc' %}active{% endif %}">
+      ارزان‌ترین
+    </a>
+    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}sort=newest"
+      class="btn btn-outline-light {% if request.GET.sort == 'newest' %}active{% endif %}">
+      جدیدترین
+    </a>
+    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}sort=most_sold"
+      class="btn btn-outline-light {% if request.GET.sort == 'most_sold' %}active{% endif %}">
+      پرفروش‌ترین
+    </a>
+    <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}sort=most_liked"
+      class="btn btn-outline-light {% if request.GET.sort == 'most_liked' %}active{% endif %}">
+      بیشترین لایک
+    </a>
+  </div>
+  {% if request.GET.sort %}
+  <a href="?{% if request.GET.q %}q={{ request.GET.q }}{% endif %}" class="btn btn-link text-white btn-sm ms-2 text-decoration-none">
+    حذف مرتب‌سازی
+  </a>
+  {% endif %}
+</div>
+
+<form class="d-flex me-3" method="get" action="{% url 'store:store_panel' %}">
+  <input class="form-control form-control-sm me-2" type="search" name="q" placeholder="جستجوی محصول..."
+    value="{{ request.GET.q }}" style="width: 200px; border-radius:30px;">
+  <button class="btn btn-outline-light btn-sm" type="submit">🔍</button>
+</form>
+
+<button class="btn btn-primary btn-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterOffcanvas">
+  ☰ فیلترها
+</button>
+{% endblock %}
+
+{% block content %}
+<!-- سایدبار فیلترها -->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="filterOffcanvas" aria-labelledby="filterOffcanvasLabel" data-bs-backdrop="false" data-bs-scroll="true">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="filterOffcanvasLabel">فیلتر محصولات</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="بستن"></button>
+  </div>
+  <div class="offcanvas-body">
+    <form method="get" action="{% url 'store:store_panel' %}" id="filterForm">
+      {% if request.GET.q %}<input type="hidden" name="q" value="{{ request.GET.q }}">{% endif %}
+      {% if request.GET.sort %}<input type="hidden" name="sort" value="{{ request.GET.sort }}">{% endif %}
+
+      <!-- ====== بازه قیمت ====== -->
+      <h6 class="fw-bold mb-2">💰 بازه قیمت</h6>
+      <div class="price-range-inputs mb-3">
+        <div class="flex-grow-1">
+          <label class="small text-muted">از</label>
+          <input type="number" name="min_price" 
+                 value="{{ min_price|default:0 }}" 
+                 min="0" max="{{ max_price|default:1000 }}" 
+                 class="form-control form-control-sm" placeholder="۰">
+        </div>
+        <div class="flex-grow-1">
+          <label class="small text-muted">تا</label>
+          <input type="number" name="max_price" 
+                 value="{{ max_price_filter|default:max_price|default:1000 }}" 
+                 min="0" max="{{ max_price|default:1000 }}" 
+                 class="form-control form-control-sm" placeholder="{{ max_price|default:1000|intcomma }}">
+        </div>
+      </div>
+
+      <!-- ====== نمایش تگ‌های انتخاب‌شده ====== -->
+      {% if selected_categories %}
+      <div class="selected-tags mb-3">
+        <h6 class="fw-bold mb-2">✅ دسته‌بندی‌های انتخاب‌شده</h6>
+        <div class="d-flex flex-wrap gap-2">
+          {% for cat_name in selected_categories %}
+          <span class="badge bg-success d-flex align-items-center gap-1 px-3 py-2 rounded-pill">
+            {{ cat_name }}
+            <a href="#" class="remove-tag text-white ms-1" data-category="{{ cat_name }}" style="text-decoration: none; font-size: 1.1rem;">×</a>
+          </span>
+          {% endfor %}
+        </div>
+        <hr>
+      </div>
+      {% else %}
+      <div class="alert alert-info py-2 px-3 mb-3 small">
+        <i class="fas fa-info-circle"></i> دسته بندی انتخاب نشده است
+      </div>
+      {% endif %}
+
+      <!-- ====== جستجوی دسته‌بندی ====== -->
+      <h6 class="fw-bold mb-2">🏷️ دسته‌بندی‌ها</h6>
+      <div class="filter-category-search">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" id="categorySearch" class="form-control form-control-sm" 
+               placeholder="جستجوی دسته‌بندی..." oninput="filterCategories()">
+      </div>
+
+      <!-- لیست کامل دسته‌بندی‌ها با چک‌باکس -->
+      <div class="category-list" id="categoryList">
+        {% for cat in categories %}
+        <div class="form-check category-item {% if forloop.counter > 3 %}d-none{% endif %}" 
+             data-name="{{ cat.name|lower }}">
+          <input class="form-check-input category-checkbox" type="checkbox" name="category" value="{{ cat.name }}" 
+                 id="cat_{{ cat.id }}" {% if cat.name in selected_categories %}checked{% endif %}>
+          <label class="form-check-label" for="cat_{{ cat.id }}">{{ cat.name }}</label>
+          <span class="badge bg-light text-muted float-start">{{ cat.product_count }}</span>
+        </div>
+        {% empty %}
+        <p class="text-muted small">دسته‌بندی موجود نیست</p>
+        {% endfor %}
+      </div>
+      
+      <small class="text-muted d-block mt-1">۳ دسته‌بندی برتر پیش‌فرض – با جستجو بقیه را پیدا کنید.</small>
+
+      <button type="submit" class="btn btn-primary w-100 mt-3" id="applyFilterBtn">اعمال فیلتر</button>
+    </form>
+  </div>
+</div>
+
+<!-- لیست محصولات -->
+<div class="row mt-4 g-3">
+  {% for product in products %}
+  <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6">
+    <div class="card product-card h-100">
+      <div class="product-image-wrapper">
+        <img class="product-thumbnail" src="{{ product.imageURL }}" alt="{{ product.name }}" loading="lazy">
+      </div>
+      
+      <div class="card-body d-flex flex-column p-3">
+        <h6 class="product-title fw-bold mb-2 text-truncate">{{ product.name }}</h6>
+        
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <div class="btn-group btn-group-sm" role="group">
+            {% if product.is_available %}
+              {% if order %}
+              <form method="post" action="{% url 'store:update_cart_item' product.id 'increase' %}" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <button type="submit" class="btn btn-sm btn-add-cart">🛒</button>
+              </form>
+              {% else %}
+              <form method="post" action="{% url 'accounts:login' %}" style="display: inline;">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ request.path }}">
+                <button type="submit" class="btn btn-sm btn-add-cart">🛒</button>
+              </form>
+              {% endif %}
+            {% else %}
+              <button class="btn btn-sm btn-danger" disabled>اتمام</button>
+            {% endif %}
+            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#productModal{{ product.id }}">
+              مشاهده
+            </button>
+          </div>
+          {% if product.is_available %}
+            <span class="product-price fw-bold text-success">${{ product.price|floatformat:0|intcomma }}</span>
+          {% endif %}
+        </div>
+        
+        <div class="d-flex justify-content-between align-items-center mt-1">
+          <div class="product-tags d-flex flex-wrap gap-1">
+            {% for cat in product.categories.all|slice:":3" %}
+              <a href="?category={{ cat.name }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" 
+                 class="badge bg-secondary text-decoration-none hover-effect">
+                {{ cat.name }}
+              </a>
+            {% endfor %}
+            {% if product.categories.count > 3 %}
+              <span class="badge bg-secondary">+{{ product.categories.count|add:"-3" }}</span>
+            {% endif %}
+            {% if not product.categories.all %}
+              <span class="text-muted small">بدون دسته</span>
+            {% endif %}
+          </div>
+          <div class="product-like">
+            {% if user.is_authenticated %}
+              <form method="post" action="{% url 'store:like_product' product.id %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link p-0 text-decoration-none text-danger" style="font-size: 0.9rem;">
+                  ❤️ {{ product.productlike_set.count }}
+                </button>
+              </form>
+            {% else %}
+              <a href="{% url 'accounts:login' %}" class="text-muted text-decoration-none" style="font-size: 0.9rem;">
+                ❤️ {{ product.productlike_set.count }}
+              </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- مودال جزئیات محصول -->
+  <div class="modal fade" id="productModal{{ product.id }}" tabindex="-1" aria-labelledby="modalLabel{{ product.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="modalLabel{{ product.id }}">{{ product.name }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="بستن">
+            <span aria-hidden="true">❌</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="modal-image-wrapper">
+                <img src="{{ product.imageURL }}" class="modal-product-image" alt="{{ product.name }}" loading="lazy">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <p><strong>قیمت:</strong>
+                {% if product.is_available %}
+                  ${{ product.price|floatformat:0|intcomma }}
+                {% else %}
+                  <span class="text-danger">اتمام موجودی</span>
+                {% endif %}
+              </p>
+              <p><strong>توضیحات:</strong> {{ product.description|default:"بدون توضیحات" }}</p>
+              <p><strong>لایک:</strong> {{ product.productlike_set.count }}</p>
+              <div class="d-flex flex-wrap mt-2 text-muted small">
+                <strong>دسته‌بندی‌ها:</strong>
+                {% for cat in product.categories.all %}
+                  <span class="badge bg-secondary me-1">{{ cat.name }}</span>
+                {% empty %}
+                  <span class="text-muted">بدون دسته‌بندی</span>
+                {% endfor %}
+              </div>
+              
+              {% if product.is_available %}
+                <form method="post" action="{% url 'store:update_cart_item' product.id 'increase' %}" class="mt-3">
+                  {% csrf_token %}
+                  <input type="hidden" name="next" value="{{ request.path }}">
+                  <button type="submit" class="btn btn-primary w-100">🛒 افزودن به سبد</button>
+                </form>
+              {% else %}
+                <button class="btn btn-danger w-100 mt-3" disabled>اتمام موجودی</button>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="row mt-4">
+            <div class="col-12">
+              <h5>نظرات ({{ product.comments.count }})</h5>
+              <hr>
+              {% for comment in product.comments.all|slice:":3" %}
+                <div class="card mb-2">
+                  <div class="card-body py-2">
+                    <strong>{{ comment.user.name }}</strong>
+                    <small class="text-muted float-end">{{ comment.created_at|date:"Y/m/d H:i" }}</small>
+                    <p class="mt-1 mb-0">{{ comment.text }}</p>
+                  </div>
+                </div>
+              {% empty %}
+                <p class="text-muted">هنوز نظری ثبت نشده است.</p>
+              {% endfor %}
+              {% if product.comments.count > 3 %}
+                <p class="text-muted small">و {{ product.comments.count|add:"-3" }} نظر دیگر ...</p>
+              {% endif %}
+
+              {% if user.is_authenticated %}
+                <form method="post" action="{% url 'store:add_comment' product.id %}" class="mt-3">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="id_text">نظر خود را بنویسید:</label>
+                    <textarea name="text" id="id_text" rows="2" class="form-control" required></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-primary mt-2">ارسال نظر</button>
+                </form>
+              {% else %}
+                <p class="alert alert-warning mt-3">برای ثبت نظر <a href="{% url 'accounts:login' %}">وارد شوید</a>.</p>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">✖️ بستن</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% if products.has_other_pages %}
+<div class="pagination justify-content-center mt-4">
+  <ul class="pagination">
+    {% if products.has_previous %}
+    <li class="page-item">
+      <a class="page-link" href="?page=1{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">اول</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{ products.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">قبلی</a>
+    </li>
+    {% endif %}
+
+    {% for num in products.paginator.page_range %}
+    <li class="page-item {% if products.number == num %}active{% endif %}">
+      <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+    </li>
+    {% endfor %}
+
+    {% if products.has_next %}
+    <li class="page-item">
+      <a class="page-link" href="?page={{ products.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">بعدی</a>
+    </li>
+    <li class="page-item">
+      <a class="page-link" href="?page={{ products.paginator.num_pages }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">آخر</a>
+    </li>
+    {% endif %}
+  </ul>
+</div>
+{% endif %}
+
+<!-- ====== اسکریپت ====== -->
+<script>
+  function filterCategories() {
+    const input = document.getElementById('categorySearch');
+    const filter = input.value.toLowerCase().trim();
+    const items = document.querySelectorAll('.category-item');
+    
+    if (filter === '') {
+      items.forEach((item, index) => {
+        if (index < 3) {
+          item.classList.remove('d-none');
+        } else {
+          item.classList.add('d-none');
+        }
+      });
+    } else {
+      items.forEach(item => {
+        const name = item.getAttribute('data-name');
+        if (name.includes(filter)) {
+          item.classList.remove('d-none');
+        } else {
+          item.classList.add('d-none');
+        }
+      });
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('filterForm');
+    const checkboxes = document.querySelectorAll('.category-checkbox');
+    
+    // ارسال خودکار فرم با تغییر چک‌باکس
+    checkboxes.forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        form.submit();
+      });
+    });
+
+    // حذف تگ با کلیک روی ×
+    const removeButtons = document.querySelectorAll('.remove-tag');
+    removeButtons.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        const categoryName = this.getAttribute('data-category');
+        // پیدا کردن چک‌باکس مربوطه و غیرفعال کردن آن
+        const targetCheckbox = document.querySelector(`.category-checkbox[value="${categoryName}"]`);
+        if (targetCheckbox) {
+          targetCheckbox.checked = false;
+          form.submit();
+        }
+      });
+    });
+
+    // بستن آفلاین با یک کلیک
+    const closeBtn = document.querySelector('[data-bs-dismiss="offcanvas"]');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function() {
+        const offcanvas = bootstrap.Offcanvas.getInstance(document.getElementById('filterOffcanvas'));
+        if (offcanvas) {
+          offcanvas.hide();
+        }
+      });
+    }
+  });
+</script>
+
+<style>
+  /* ===== استایل‌های بهینه‌شده ===== */
+  .product-card {
+    border-radius: 20px;
+    overflow: hidden;
+    background: #ffffff;
+    border: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.10);
+  }
+  
+  .product-image-wrapper {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background-color: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .product-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    transition: transform 0.4s ease;
+    background-color: #f8f9fa;
+  }
+  .product-thumbnail:hover {
+    transform: scale(1.03);
+  }
+  
+  .product-title {
+    font-size: 0.95rem;
+    color: #2d3436;
+    min-height: 2.5rem;
+    line-height: 1.3;
+  }
+  
+  .btn-add-cart {
+    background: linear-gradient(145deg, #ff9a76, #f07b5a);
+    border: none;
+    color: #fff;
+    border-radius: 30px;
+    padding: 0.2rem 0.8rem;
+    font-weight: 500;
+    transition: all 0.25s ease;
+  }
+  .btn-add-cart:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 126, 95, 0.35);
+    color: #fff;
+  }
+  
+  .product-price {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+  
+  .product-tags {
+    flex: 1;
+    min-width: 0;
+  }
+  .product-tags .badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    white-space: nowrap;
+    max-width: 80px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  .hover-effect {
+    transition: all 0.2s ease;
+  }
+  .hover-effect:hover {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  
+  .product-like {
+    flex-shrink: 0;
+    margin-right: 0.5rem;
+  }
+  
+  .btn-group-sm .btn {
+    border-radius: 30px !important;
+    padding: 0.2rem 0.8rem;
+    font-size: 0.8rem;
+  }
+  .btn-group-sm .btn-outline-primary {
+    border-color: #0984e3;
+    color: #0984e3;
+  }
+  .btn-group-sm .btn-outline-primary:hover {
+    background: #0984e3;
+    color: #fff;
+  }
+  
+  .modal-image-wrapper {
+    width: 100%;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    overflow: hidden;
+    padding: 10px;
+  }
+  .modal-product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    background-color: #f8f9fa;
+  }
+  
+  .modal-header .btn-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    padding: 0.5rem;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+  .modal-header .btn-close:hover {
+    opacity: 1;
+  }
+  .modal-header .btn-close span {
+    display: block;
+    line-height: 1;
+  }
+  
+  .filter-category-search {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+  .filter-category-search input {
+    border-radius: 30px;
+    padding-right: 2.5rem;
+    border: 2px solid #e9ecef;
+    transition: all 0.25s ease;
+  }
+  .filter-category-search input:focus {
+    border-color: #27ae60;
+    box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.15);
+  }
+  .filter-category-search .search-icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #adb5bd;
+  }
+  .category-list {
+    max-height: 200px;
+    overflow-y: auto;
+    padding-left: 0.5rem;
+  }
+  .category-list .form-check {
+    padding: 0.3rem 0;
+    margin: 0;
+    border-bottom: 1px solid #f8f9fa;
+  }
+  .category-list .form-check:last-child {
+    border-bottom: none;
+  }
+  .category-list .form-check-input:checked {
+    background-color: #27ae60;
+    border-color: #27ae60;
+  }
+  .price-range-inputs {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  .price-range-inputs input {
+    border-radius: 30px;
+    border: 2px solid #e9ecef;
+    padding: 0.4rem 0.8rem;
+    width: 100%;
+    transition: all 0.25s ease;
+  }
+  .price-range-inputs input:focus {
+    border-color: #27ae60;
+    box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.15);
+  }
+  .price-range-inputs span {
+    color: #6c757d;
+    font-weight: 500;
+  }
+
+  .selected-tags .badge {
+    font-size: 0.9rem;
+    background: #27ae60 !important;
+  }
+  .selected-tags .badge .remove-tag {
+    font-weight: 700;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  .selected-tags .badge .remove-tag:hover {
+    opacity: 1;
+  }
+  
+  @media (max-width: 768px) {
+    .product-image-wrapper {
+      height: 160px;
+    }
+    .modal-image-wrapper {
+      height: 220px;
+    }
+    .product-title {
+      font-size: 0.85rem;
+      min-height: 2.2rem;
+    }
+    .product-price {
+      font-size: 0.9rem;
+    }
+    .price-range-inputs {
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+  }
+  @media (max-width: 576px) {
+    .product-image-wrapper {
+      height: 140px;
+    }
+    .modal-image-wrapper {
+      height: 180px;
+    }
+    .btn-group-sm .btn {
+      font-size: 0.7rem;
+      padding: 0.15rem 0.6rem;
+    }
+    .product-tags .badge {
+      font-size: 0.55rem;
+      padding: 0.15rem 0.4rem;
+      max-width: 60px;
+    }
+  }
+</style>
+{% endblock %}

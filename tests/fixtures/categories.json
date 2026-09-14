@@ -1,0 +1,17 @@
+[
+  {
+    "model": "store.category",
+    "pk": 1,
+    "fields": {"name": "Electronics"}
+  },
+  {
+    "model": "store.category",
+    "pk": 2,
+    "fields": {"name": "Books"}
+  },
+  {
+    "model": "store.category",
+    "pk": 3,
+    "fields": {"name": "Clothing"}
+  }
+]

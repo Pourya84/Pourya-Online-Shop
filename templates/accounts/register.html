@@ -1,0 +1,275 @@
+{% extends 'store/main.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+  /* استایل‌های اختصاصی صفحات احراز هویت */
+  .auth-card {
+    border: none;
+    border-radius: 30px;
+    overflow: hidden;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.10);
+    transition: transform 0.3s ease;
+  }
+  .auth-card:hover {
+    transform: translateY(-4px);
+  }
+  .auth-card .card-header {
+    background: linear-gradient(145deg, #27ae60, #2ecc71);
+    padding: 1.8rem 1.5rem;
+    border-bottom: none;
+    text-align: center;
+  }
+  .auth-card .card-header h4 {
+    color: #fff;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.5px;
+  }
+  .auth-card .card-header h4 i {
+    margin-left: 8px;
+  }
+  .auth-card .card-body {
+    padding: 2rem 1.8rem;
+    background: #ffffff;
+  }
+  .auth-card .form-group {
+    margin-bottom: 1.2rem;
+  }
+  .auth-card .form-group label {
+    font-weight: 600;
+    color: #2d3436;
+    font-size: 0.95rem;
+    margin-bottom: 0.4rem;
+    display: block;
+  }
+  .auth-card .form-control {
+    border-radius: 16px;
+    border: 2px solid #e9ecef;
+    padding: 0.7rem 1rem;
+    font-size: 1rem;
+    transition: all 0.25s ease;
+    background: #f8f9fa;
+  }
+  .auth-card .form-control:focus {
+    border-color: #27ae60;
+    box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.15);
+    background: #ffffff;
+  }
+  .auth-card .form-control select {
+    appearance: auto;
+  }
+  .password-wrapper {
+    position: relative;
+  }
+  .password-wrapper .form-control {
+    padding-left: 3.2rem;
+  }
+  .toggle-password {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s ease;
+  }
+  .toggle-password:hover {
+    opacity: 1;
+  }
+  .auth-card .btn-auth {
+    border-radius: 30px;
+    padding: 0.8rem 1.5rem;
+    font-weight: 700;
+    font-size: 1.05rem;
+    border: none;
+    background: linear-gradient(145deg, #27ae60, #2ecc71);
+    color: #fff;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 0.5rem;
+  }
+  .auth-card .btn-auth:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(39, 174, 96, 0.35);
+  }
+  .auth-card .auth-link {
+    color: #27ae60;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+  .auth-card .auth-link:hover {
+    color: #1e8449;
+    text-decoration: underline;
+  }
+  .auth-card .card-footer {
+    background: #f8f9fa;
+    border-top: none;
+    padding: 1.2rem;
+    text-align: center;
+    border-radius: 0 0 30px 30px;
+  }
+
+  /* نمایش خطاهای فرم */
+  .errorlist {
+    color: #dc3545;
+    list-style: none;
+    padding: 0;
+    margin-top: 0.3rem;
+    font-size: 0.9rem;
+  }
+  .errorlist li {
+    margin-bottom: 0.2rem;
+  }
+
+  /* ریسپانسیو */
+  @media (max-width: 576px) {
+    .auth-card .card-body {
+      padding: 1.5rem 1.2rem;
+    }
+    .auth-card .card-header {
+      padding: 1.2rem 1rem;
+    }
+    .auth-card .card-header h4 {
+      font-size: 1.2rem;
+    }
+  }
+</style>
+
+<div class="container my-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="card auth-card">
+        <div class="card-header">
+          <h4><i class="fas fa-user-plus"></i> ثبت‌نام کاربر جدید</h4>
+        </div>
+        <div class="card-body">
+          <!-- نمایش پیام‌های خطا و موفقیت -->
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="بستن"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+
+          <form method="post">
+            {% csrf_token %}
+
+            <!-- نام کاربری -->
+            <div class="form-group">
+              <label for="id_username">👤 نام کاربری</label>
+              <input type="text" name="username" id="id_username" 
+                     class="form-control {% if form.username.errors %}is-invalid{% endif %}" 
+                     placeholder="یک نام کاربری انتخاب کنید" 
+                     value="{{ form.username.value|default:'' }}" required>
+              {% if form.username.errors %}
+                <ul class="errorlist">
+                  {% for error in form.username.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+
+            <!-- ایمیل (فیلد جدید اضافه شده) -->
+            <div class="form-group">
+              <label for="id_email">📧 ایمیل</label>
+              <input type="email" name="email" id="id_email" 
+                     class="form-control {% if form.email.errors %}is-invalid{% endif %}" 
+                     placeholder="ایمیل خود را وارد کنید" 
+                     value="{{ form.email.value|default:'' }}" required>
+              {% if form.email.errors %}
+                <ul class="errorlist">
+                  {% for error in form.email.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                </ul>
+              {% endif %}
+            </div>
+
+            <!-- رمز عبور -->
+            <div class="form-group">
+              <label for="id_password1">🔒 رمز عبور</label>
+              <div class="password-wrapper">
+                <input type="password" name="password1" id="id_password1" 
+                       class="form-control {% if form.password1.errors %}is-invalid{% endif %}" 
+                       placeholder="رمز عبور قوی وارد کنید" required>
+                <button type="button" class="toggle-password" data-target="id_password1" aria-label="نمایش رمز">
+                  😑
+                </button>
+                {% if form.password1.errors %}
+                  <ul class="errorlist">
+                    {% for error in form.password1.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- تکرار رمز عبور -->
+            <div class="form-group">
+              <label for="id_password2">✅ تکرار رمز عبور</label>
+              <div class="password-wrapper">
+                <input type="password" name="password2" id="id_password2" 
+                       class="form-control {% if form.password2.errors %}is-invalid{% endif %}" 
+                       placeholder="رمز عبور را دوباره وارد کنید" required>
+                <button type="button" class="toggle-password" data-target="id_password2" aria-label="نمایش رمز">
+                  😑
+                </button>
+                {% if form.password2.errors %}
+                  <ul class="errorlist">
+                    {% for error in form.password2.errors %}
+                      <li>{{ error }}</li>
+                    {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- نقش کاربر -->
+            <div class="form-group">
+              <label for="id_role">🎯 نقش خود را انتخاب کنید</label>
+              <select name="role" id="id_role" class="form-control">
+                <option value="buyer">🛒 خریدار</option>
+                <option value="seller">📦 فروشنده</option>
+              </select>
+            </div>
+
+            <button type="submit" class="btn-auth">✅ ثبت‌نام</button>
+          </form>
+        </div>
+        <div class="card-footer">
+          <p class="mb-0">
+            قبلاً ثبت‌نام کرده‌اید؟ <a href="{% url 'accounts:login' %}" class="auth-link">وارد شوید</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('.toggle-password').forEach(button => {
+    button.addEventListener('click', function() {
+      const targetId = this.getAttribute('data-target');
+      const input = document.getElementById(targetId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        this.textContent = '😏';
+      } else {
+        input.type = 'password';
+        this.textContent = '😑';
+      }
+    });
+  });
+</script>
+{% endblock %}
