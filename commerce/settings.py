@@ -4,13 +4,13 @@ from datetime import timedelta
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# امنیت – در محیط تولید حتماً این مقادیر را از متغیرهای محیطی بخوانید
+# Security – In production, always read these values from environment variables.
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-dev-key")
 DEBUG = os.getenv("DEBUG", "True") == "True"
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 
-# اپلیکیشن‌های نصب شده
+# Installed applications
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -19,7 +19,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django_filters",
     "django.contrib.staticfiles",
-    # کتابخانه‌های شخص ثالث
+    # Third-party libraries
     "rest_framework",
     "silk",
     "drf_spectacular",
@@ -27,12 +27,12 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "django.contrib.humanize",
-    # اپلیکیشن‌های خود پروژه
+    # Project applications
     "store",
     "accounts",
 ]
 
-# میان‌افزارها – ترتیب CORSMiddleware درست است
+# Middleware – The order of CORSMiddleware is correct.
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
@@ -64,7 +64,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "commerce.wsgi.application"
 
-# دیتابیس
+# Database
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
@@ -72,7 +72,7 @@ DATABASES = {
     }
 }
 
-# کش (اختیاری)
+# Cache (optional)
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
@@ -80,7 +80,7 @@ CACHES = {
     }
 }
 
-# اعتبارسنجی رمز عبور
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
@@ -96,13 +96,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# بین‌المللی‌سازی
+# Internationalization
 LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
 
-# فایل‌های استاتیک و رسانه
+# Static and media files
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
@@ -110,7 +110,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
-# --- تنظیمات REST Framework و OpenAPI (Swagger) ---
+# --- REST Framework and OpenAPI (Swagger) settings ---
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
@@ -131,11 +131,11 @@ SPECTACULAR_SETTINGS = {
     "DESCRIPTION": "Backend API for ecommerce project",
     "VERSION": "1.0.0",
     "SERVE_INCLUDE_SCHEMA": False,
-    # استفاده از فایل‌های sidecar برای نمایش Swagger UI (بدون نیاز به CDN)
+    # Use sidecar files to display Swagger UI (no CDN required).
     "SWAGGER_UI_DIST": "SIDECAR",
     "SWAGGER_UI_FAVICON_HREF": "SIDECAR",
     "REDOC_DIST": "SIDECAR",
-    # تنظیمات ظاهری Swagger UI
+    # Swagger UI appearance settings
     "SWAGGER_UI_SETTINGS": {
         "deepLinking": True,
         "persistAuthorization": True,
@@ -151,14 +151,14 @@ SPECTACULAR_SETTINGS = {
         }
     },
     "SECURITY": [{"BearerAuth": []}],
-    # (اختیاری) اگر در مدل‌ها از TextChoices استفاده می‌کنید، اینجا مسیر آن Enum را مشخص کنید.
-    # در پروژه فعلی فقط فیلد role از نوع ساده است، بنابراین این اووراید ضروری نیست.
+    # (Optional) If you use TextChoices in models, specify the path to that Enum here.
+    # In the current project, the role field is a simple field, so this override is not necessary.
     # "ENUM_NAME_OVERRIDES": {
     #     "UserRole": "store.models.UserProfile.role",
     # },
 }
 
-# CORS – اجازه درخواست از فرانت‌اند ری‌اکت (در حال توسعه)
+# CORS – Allow requests from the React frontend (during development).
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
@@ -172,7 +172,7 @@ SIMPLE_JWT = {
 }
 
 
-# مسیرهای مربوط به احراز هویت
+# Authentication-related paths
 LOGIN_URL = "accounts:login"
 LOGIN_REDIRECT_URL = "store:store_panel"
 PASSWORD_CHANGE_REDIRECT_URL = "store:store_panel"
@@ -190,7 +190,7 @@ if DEBUG:
 if not DEBUG:
     CSRF_COOKIE_SECURE = True
     SESSION_COOKIE_SECURE = True
-    SECURE_SSL_REDIRECT = True  # اگر SSL دارید
+    SECURE_SSL_REDIRECT = True  # If you have SSL enabled
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_HSTS_PRELOAD = True

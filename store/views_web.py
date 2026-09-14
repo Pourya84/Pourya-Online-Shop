@@ -27,7 +27,7 @@ def store(request):
     categories_list = (
         Category.objects
         .annotate(product_count=Count('products'))
-        .only('id', 'name')           # فقط فیلدهای واقعی را مشخص کن
+        .only('id', 'name')           # Only select the actual fields (id and name)
         .order_by('-product_count')
     )
 

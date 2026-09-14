@@ -12,7 +12,7 @@ from rest_framework_simplejwt.views import (
     TokenRefreshView,
 )
 
-# ===== تعریف urlpatterns اصلی =====
+# ===== Main urlpatterns definition =====
 urlpatterns = [
     path(
         "api/token/",
@@ -41,12 +41,12 @@ urlpatterns = [
     path("silk/", include("silk.urls", namespace="silk")),
 ]
 
-# ===== اضافه کردن مسیرهای debug toolbar در حالت DEBUG =====
+# ===== Add debug toolbar URLs when DEBUG is True =====
 if settings.DEBUG:
     import debug_toolbar
     urlpatterns += [
         path("__debug__/", include(debug_toolbar.urls)),
     ]
 
-# ===== اضافه کردن مسیرهای رسانه (فایل‌های آپلودی) =====
+# ===== Add media (uploaded files) URLs =====
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

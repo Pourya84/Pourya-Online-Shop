@@ -11,7 +11,7 @@ urlpatterns = [
     path("register/", views.register_view, name="register"),
     path("change-password/", views.change_password, name="change_password"),
     
-    # ===== مسیرهای بازنشانی رمز عبور =====
+    # ===== Password reset URLs =====
     path('password-reset/', views.CustomPasswordResetView.as_view(), name='password_reset'),
     path('password-reset/done/', views.CustomPasswordResetDoneView.as_view(), name='password_reset_done'),
     path('password-reset/confirm/<uidb64>/<token>/', views.CustomPasswordResetConfirmView.as_view(), name='password_reset_confirm'),

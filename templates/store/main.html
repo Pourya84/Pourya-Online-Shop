@@ -6,16 +6,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pourya-Shop</title>
+
+  <!-- Bootstrap RTL -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css">
+
+  <!-- Vazir Persian Font -->
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v30.1.0/dist/font-face.css" rel="stylesheet">
+
+  <!-- Main Project Stylesheet -->
   <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+
+  <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
   <style>
-    /* استایل‌های منوی پروفایل با hover */
+    /* Profile dropdown container */
     .profile-dropdown {
       position: relative;
       display: inline-block;
     }
+
+    /* Custom profile dropdown menu */
     .profile-dropdown .dropdown-menu-custom {
       display: none;
       position: absolute;
@@ -29,9 +40,13 @@
       z-index: 1000;
       border: 1px solid #eee;
     }
+
+    /* Show profile menu on hover */
     .profile-dropdown:hover .dropdown-menu-custom {
       display: block;
     }
+
+    /* Profile dropdown item */
     .profile-dropdown .dropdown-item-custom {
       display: block;
       padding: 0.6rem 1rem;
@@ -41,30 +56,41 @@
       transition: background 0.2s;
       font-size: 0.95rem;
     }
+
+    /* Dropdown item hover state */
     .profile-dropdown .dropdown-item-custom:hover {
       background: #f8f9fa;
     }
+
     .profile-dropdown .dropdown-item-custom i {
       margin-left: 8px;
       width: 20px;
     }
+
+    /* Profile information header */
     .profile-dropdown .profile-header {
       padding: 0.8rem 1rem;
       border-bottom: 1px solid #eee;
       margin-bottom: 0.3rem;
     }
+
     .profile-dropdown .profile-header .name {
       font-weight: 700;
       color: #2d3436;
     }
+
     .profile-dropdown .profile-header .role {
       font-size: 0.8rem;
       color: #6c757d;
     }
+
+    /* Dropdown separator */
     .profile-dropdown .divider {
       border-top: 1px solid #eee;
       margin: 0.3rem 0;
     }
+
+    /* User profile avatar */
     .profile-avatar {
       width: 36px;
       height: 36px;
@@ -73,9 +99,12 @@
       border: 2px solid #f39c12;
       cursor: pointer;
     }
+
     .profile-avatar:hover {
       border-color: #e67e22;
     }
+
+    /* Logout button styling */
     .btn-logout {
       background: none;
       border: none;
@@ -84,106 +113,207 @@
       color: #e74c3c;
       cursor: pointer;
     }
+
     .btn-logout:hover {
       background: #f8f9fa;
     }
 
-    /* استایل‌های دکمه‌های نوار */
+    /* Navbar button styling */
     .navbar .btn-outline-light {
       border-color: rgba(255,255,255,0.3);
       color: rgba(255,255,255,0.8);
     }
+
     .navbar .btn-outline-light:hover,
     .navbar .btn-outline-light.active {
       background: #f39c12;
       border-color: #f39c12;
       color: #fff;
     }
+
     .navbar .form-control-sm {
       border-radius: 30px;
     }
+
     .navbar .btn-link.text-white {
       color: rgba(255,255,255,0.7) !important;
     }
+
     .navbar .btn-link.text-white:hover {
       color: #fff !important;
     }
+
+    /* Keep the cart icon and item count badge close together */
+    .cart-wrapper {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
   </style>
 </head>
+
 <body>
 
-  <!-- ========== نوار ناوبری ========== -->
+  <!-- ==================== Navigation Bar ==================== -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-black py-2">
     <div class="container-fluid px-4">
+
+      <!-- Brand -->
       <a class="navbar-brand fs-4" href="{% url 'store:homepage' %}">
         <span style="color: #f39c12;">Pourya</span>-Shop
       </a>
+
+      <!-- Mobile navigation toggle -->
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
         aria-controls="navbarContent" aria-expanded="false" aria-label="منو">
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarContent">
-        <!-- منوی اصلی -->
+
+        <!-- Main navigation links -->
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <li class="nav-item"><a class="nav-link" href="{% url 'store:store_panel' %}">فروشگاه</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'store:store_panel' %}">فروشگاه</a>
+          </li>
+
           {% if user.is_authenticated and user.profile.role == 'seller' %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'store:seller_panel' %}">پنل فروشنده</a></li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'store:seller_panel' %}">پنل فروشنده</a>
+          </li>
           {% endif %}
         </ul>
 
-        <!-- بلوک برای آیتم‌های اضافی نوار (در اینجا خالی است) -->
+        <!-- Optional additional navigation items -->
         {% block extra_nav_items %}{% endblock %}
 
-        <!-- سمت راست نوار: پروفایل و سبد خرید -->
+        <!-- ==================== User Actions ==================== -->
         <div class="navbar-right d-flex align-items-center gap-3">
+
           {% if user.is_authenticated %}
-          <!-- منوی پروفایل با hover -->
+
+          <!-- Profile dropdown -->
           <div class="profile-dropdown">
-            <img class="profile-avatar" src="{% static 'images/profile.png' %}" alt="پروفایل">
+            <img
+              class="profile-avatar"
+              src="{% static 'images/profile.png' %}"
+              alt="پروفایل"
+            >
+
             <div class="dropdown-menu-custom">
+
+              <!-- User information -->
               <div class="profile-header">
-                <div class="name">{{ user.get_full_name|default:user.username }}</div>
-                <div class="role">{{ user.profile.role|default:"کاربر" }}</div>
+                <div class="name">
+                  {{ user.get_full_name|default:user.username }}
+                </div>
+                <div class="role">
+                  {{ user.profile.role|default:"کاربر" }}
+                </div>
               </div>
-              <a class="dropdown-item-custom" href="{% url 'store:cart' %}"><i class="fas fa-shopping-bag" style="color:#27ae60;"></i> سفارشات من</a>
-              <a class="dropdown-item-custom" href="{% url 'store:liked_products' %}"><i class="fas fa-heart" style="color:#e74c3c;"></i> علاقه‌مندی‌ها</a>
+
+              <!-- User orders -->
+              <a class="dropdown-item-custom" href="{% url 'store:cart' %}">
+                <i class="fas fa-shopping-bag" style="color:#27ae60;"></i>
+                سفارشات من
+              </a>
+
+              <!-- User wishlist -->
+              <a class="dropdown-item-custom" href="{% url 'store:liked_products' %}">
+                <i class="fas fa-heart" style="color:#e74c3c;"></i>
+                علاقه‌مندی‌ها
+              </a>
+
               {% if user.profile.role == 'seller' %}
-              <a class="dropdown-item-custom" href="{% url 'store:seller_panel' %}"><i class="fas fa-store" style="color:#0984e3;"></i> پنل فروشنده</a>
+
+              <!-- Seller dashboard -->
+              <a class="dropdown-item-custom" href="{% url 'store:seller_panel' %}">
+                <i class="fas fa-store" style="color:#0984e3;"></i>
+                پنل فروشنده
+              </a>
+
               {% endif %}
+
               <div class="divider"></div>
-              <a class="dropdown-item-custom" href="{% url 'accounts:change_password' %}"><i class="fas fa-key" style="color:#6c5ce7;"></i> تغییر رمز عبور</a>
-              <!-- ===== لینک فراموشی رمز عبور اضافه شد ===== -->
-              <a class="dropdown-item-custom" href="{% url 'accounts:password_reset' %}"><i class="fas fa-envelope" style="color:#f39c12;"></i> فراموشی رمز عبور</a>
+
+              <!-- Change password -->
+              <a class="dropdown-item-custom" href="{% url 'accounts:change_password' %}">
+                <i class="fas fa-key" style="color:#6c5ce7;"></i>
+                تغییر رمز عبور
+              </a>
+
+              <!-- Password reset -->
+              <a class="dropdown-item-custom" href="{% url 'accounts:password_reset' %}">
+                <i class="fas fa-envelope" style="color:#f39c12;"></i>
+                فراموشی رمز عبور
+              </a>
+
+              <!-- Logout -->
               <form action="{% url 'accounts:logout' %}" method="post">
                 {% csrf_token %}
-                <button type="submit" class="dropdown-item-custom btn-logout"><i class="fas fa-sign-out-alt"></i> خروج از حساب</button>
+                <button type="submit" class="dropdown-item-custom btn-logout">
+                  <i class="fas fa-sign-out-alt"></i>
+                  خروج از حساب
+                </button>
               </form>
+
             </div>
           </div>
+
           {% else %}
-          <a href="{% url 'accounts:login' %}" class="btn btn-warning btn-sm fw-bold">ورود | ثبت‌نام</a>
+
+          <!-- Login / Registration -->
+          <a href="{% url 'accounts:login' %}" class="btn btn-warning btn-sm fw-bold">
+            ورود | ثبت‌نام
+          </a>
+
           {% endif %}
 
-          <a href="{% url 'store:cart' %}" class="position-relative d-inline-flex align-items-center">
-            <img id="cart-icon" src="{% static 'images/cart.png' %}" alt="سبد خرید" style="width:34px; height:34px; filter: none; opacity:1;">
-          </a>
-          <span id="cart-total" class="badge bg-danger text-white fw-bold rounded-pill px-2 py-1" style="font-size:0.8rem;">
-            {{ order.get_total_items|default:0 }}
-          </span>
+          <!-- Shopping cart and item count -->
+          <div class="cart-wrapper">
+
+            <a href="{% url 'store:cart' %}" class="position-relative d-inline-flex align-items-center">
+              <img
+                id="cart-icon"
+                src="{% static 'images/cart.png' %}"
+                alt="سبد خرید"
+                style="width:34px; height:34px; filter:none; opacity:1;"
+              >
+            </a>
+
+            <span
+              id="cart-total"
+              class="badge bg-danger text-white fw-bold rounded-pill px-2 py-1"
+              style="font-size:0.8rem;"
+            >
+              {{ order.get_total_items|default:0 }}
+            </span>
+
+          </div>
+
         </div>
       </div>
     </div>
   </nav>
 
-  <!-- ========== محتوای اصلی ========== -->
+  <!-- ==================== Main Content ==================== -->
   <div class="container my-4">
     {% block content %}
-    <h1 class="text-center text-secondary">به فروشگاه خوش آمدید</h1>
-    <p class="text-center">محتوای شما در اینجا نمایش داده می‌شود...</p>
+      <h1 class="text-center text-secondary">
+        به فروشگاه خوش آمدید
+      </h1>
+
+      <p class="text-center">
+        محتوای شما در اینجا نمایش داده می‌شود...
+      </p>
     {% endblock content %}
   </div>
 
+  <!-- Bootstrap JavaScript -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Project Bootstrap Bundle -->
   <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+
 </body>
 </html>

@@ -30,7 +30,7 @@ def register_view(request):
         form = CustomUserCreationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            # ذخیره ایمیل در مدل User
+            # Save the email in the User model
             user.email = form.cleaned_data['email']
             user.save()
 
@@ -42,7 +42,7 @@ def register_view(request):
             profile = UserProfile.objects.create(
                 user=user,
                 name=user.username,
-                email=user.email,  # ایمیل در پروفایل هم ذخیره می‌شود
+                email=user.email,  # Also save the email in the profile
                 role=role,
                 store_name=(
                     request.POST.get("store_name", "") if role == "seller" else ""
@@ -77,7 +77,7 @@ def change_password(request):
     return render(request, "accounts/change_password.html", {"form": form})
 
 
-# ========== ویوهای بازنشانی رمز عبور با فرم سفارشی ==========
+# ========== Password reset views with a custom form ==========
 
 class CustomPasswordResetView(PasswordResetView):
     form_class = CustomPasswordResetForm

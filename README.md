@@ -46,7 +46,6 @@
 | صفحه اصلی | ![Homepage](screenshots/homepage.png) |
 | فروشگاه | ![Store](screenshots/store.png) |
 | پنل فروشنده | ![Seller Panel](screenshots/seller-panel.png) |
-| API Swagger | ![Swagger](screenshots/swagger.png) |
 
 ---
 

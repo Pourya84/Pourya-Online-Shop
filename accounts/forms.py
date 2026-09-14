@@ -16,7 +16,7 @@ class CustomUserCreationForm(UserCreationForm):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # اضافه کردن کلاس‌های Bootstrap به فیلدها
+        # Add Bootstrap classes to the fields
         for field_name in self.fields:
             self.fields[field_name].widget.attrs['class'] = 'form-control'
             self.fields[field_name].widget.attrs['placeholder'] = self.fields[field_name].label
@@ -34,12 +34,12 @@ class CustomPasswordResetForm(PasswordResetForm):
 
     def get_users(self, email):
         """جستجوی کاربر با ایمیل در UserProfile و سپس User"""
-        # جستجو در UserProfile
+        # Search in UserProfile
         try:
             profile = UserProfile.objects.get(email=email)
             return [profile.user]
         except UserProfile.DoesNotExist:
-            # جستجو در User
+            # Search in User
             try:
                 return [User.objects.get(email=email)]
             except User.DoesNotExist:
