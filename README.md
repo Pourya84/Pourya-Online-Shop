@@ -100,10 +100,6 @@ Frontend پروژه با **Django Templates** و **Bootstrap 5** ساخته شد
 |:---:|:---:|:---:|
 | ![Homepage](screenshots/homepage.png) | ![Store](screenshots/store.png) | ![Seller Panel](screenshots/seller-panel.png) |
 
-| Swagger UI |
-|:---:|
-| ![Swagger](screenshots/swagger.png) |
-
 ---
 
 ## 🚀 نصب و اجرا
