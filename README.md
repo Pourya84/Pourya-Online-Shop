@@ -1,5 +1,9 @@
 # 🛒 Pourya Online Shop
 
+[![Python](https://img.shields.io/badge/Python-3.10-blue.svg)](https://www.python.org/)
+[![Django](https://img.shields.io/badge/Django-5.2-green.svg)](https://www.djangoproject.com/)
+[![DRF](https://img.shields.io/badge/DRF-3.15-red.svg)](https://www.django-rest-framework.org/)
+
 > یک فروشگاه اینترنتی ساخته‌شده با **Django** و **Django REST Framework**
 
 این پروژه را بیشتر برای یادگیری و تجربه کار روی یک پروژه نسبتاً واقعی Django ساختم. در طول توسعه، روی بخش‌هایی مثل احراز هویت، سطح دسترسی کاربران، مدیریت محصولات، سبد خرید، API، تست‌نویسی و بهینه‌سازی کوئری‌های دیتابیس کار کردم.
@@ -92,11 +96,13 @@ Frontend پروژه با **Django Templates** و **Bootstrap 5** ساخته شد
 
 ## 📸 تصاویر پروژه
 
-> تصاویر بخش‌های مختلف پروژه را اینجا قرار می‌دهم.
-
 | صفحه اصلی | فروشگاه | پنل فروشنده |
 |:---:|:---:|:---:|
-| *(تصویر)* | *(تصویر)* | *(تصویر)* |
+| ![Homepage](screenshots/homepage.png) | ![Store](screenshots/store.png) | ![Seller Panel](screenshots/seller-panel.png) |
+
+| Swagger UI |
+|:---:|
+| ![Swagger](screenshots/swagger.png) |
 
 ---
 
@@ -144,10 +150,8 @@ http://127.0.0.1:8000/
 بعد از اجرای پروژه، Swagger و ReDoc از مسیرهایی که در urls.py تعریف شده‌اند قابل دسترسی هستند:
 
 سرویس	آدرس
-Swagger	http://127.0.0.1:8000/<swagger-path>/
-ReDoc	http://127.0.0.1:8000/<redoc-path>/
-مسیرهای بالا باید با URL واقعی تعریف‌شده در پروژه جایگزین شوند.
-
+Swagger	http://127.0.0.1:8000/api/schema/swagger-ui/
+ReDoc	http://127.0.0.1:8000/api/schema/redoc/
 چند نمونه از APIهای پروژه:
 
 text
