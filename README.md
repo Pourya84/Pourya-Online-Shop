@@ -138,7 +138,7 @@ http://127.0.0.1:8000/
 
 ```
 
-🔌 مستندات API
+### 🔌 مستندات API
 مستندات API با استفاده از drf-spectacular و استاندارد OpenAPI ساخته شده است.
 ```bash
 بعد از اجرای پروژه، Swagger و ReDoc از مسیرهایی که در urls.py تعریف شده‌اند قابل دسترسی هستند:
@@ -232,8 +232,11 @@ Authentication و Permission
 بررسی Queryها با Debug Toolbar و Silk
 
 رعایت ساختار مناسب‌تر برای پروژه
+
 ```
-📬 ارتباط با من
+
+### 📬 ارتباط با من
+
 📧 Email: amirkhah1384@gmail.com
 
 در حال حاضر به دنبال فرصت‌های شغلی Junior Django / Python Backend هستم و از فرصت‌های Remote، Full-time و Freelance استقبال می‌کنم.
