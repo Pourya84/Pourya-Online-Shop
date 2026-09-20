@@ -115,31 +115,29 @@ git clone https://github.com/Pourya84/Pourya-Online-Shop.git
 cd Pourya-Online-Shop
 ۲. ساخت محیط مجازی
 ویندوز:
-
-bash
 python -m venv venv
 venv\Scripts\activate
 Linux / macOS:
 
-bash
 python3 -m venv venv
 source venv/bin/activate
+
 ۳. نصب وابستگی‌ها
-bash
 pip install -r requirements.txt
+
 ۴. اجرای Migrationها
-bash
 python manage.py migrate
+
 ۵. ساخت کاربر ادمین (در صورت نیاز)
-bash
 python manage.py createsuperuser
+
 ۶. اجرای پروژه
-bash
 python manage.py runserver
 بعد از اجرای سرور، پروژه از آدرس زیر در دسترس خواهد بود:
-
-text
 http://127.0.0.1:8000/
+
+```
+
 🔌 مستندات API
 مستندات API با استفاده از drf-spectacular و استاندارد OpenAPI ساخته شده است.
 
