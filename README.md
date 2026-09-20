@@ -140,7 +140,7 @@ http://127.0.0.1:8000/
 
 🔌 مستندات API
 مستندات API با استفاده از drf-spectacular و استاندارد OpenAPI ساخته شده است.
-
+```bash
 بعد از اجرای پروژه، Swagger و ReDoc از مسیرهایی که در urls.py تعریف شده‌اند قابل دسترسی هستند:
 
 سرویس	آدرس
@@ -157,23 +157,17 @@ GET  /api/categories/
 
 🧪 تست‌ها
 اجرای تست‌ها:
-
-bash
 pytest
 اجرای تست‌ها همراه با Coverage:
-
-bash
 pytest --cov=. --cov-report=term-missing
-ساخت گزارش HTML:
 
-bash
+ساخت گزارش HTML:
 pytest --cov=. --cov-report=html
 بعد از اجرا، گزارش در مسیر htmlcov/index.html ساخته می‌شود.
 
 در حال حاضر پروژه شامل ۴۸ تست با حدود ۶۶٪ Coverage است.
 
 📁 ساختار پروژه
-text
 Pourya-Online-Shop/
 │
 ├── accounts/          # کاربران، احراز هویت، پروفایل
@@ -238,7 +232,7 @@ Authentication و Permission
 بررسی Queryها با Debug Toolbar و Silk
 
 رعایت ساختار مناسب‌تر برای پروژه
-
+```
 📬 ارتباط با من
 📧 Email: amirkhah1384@gmail.com
 
